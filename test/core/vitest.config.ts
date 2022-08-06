@@ -38,6 +38,7 @@ export default defineConfig({
   },
   test: {
     testTimeout: 2000,
+    teardownTimeout: 10,
     setupFiles: [
       './test/setup.ts',
     ],
