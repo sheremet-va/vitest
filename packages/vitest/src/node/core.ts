@@ -160,7 +160,7 @@ export class Vitest {
       if (this.config.watch) {
         await this.report('onWatcherStart', files, [
           ...sourceErrors,
-          this.state.getUnhandledErrors(),
+          ...this.state.getUnhandledErrors(),
         ])
       }
     })
