@@ -92,6 +92,7 @@ const config = {
   typecheck: {
     checker: 'tsc' as const,
     include: ['**/*.test-d.ts'],
+    exclude: defaultExclude,
   },
 }
 
