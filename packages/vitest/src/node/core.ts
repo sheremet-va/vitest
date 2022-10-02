@@ -34,6 +34,7 @@ export class Vitest {
   coverageProvider: CoverageProvider | null | undefined
   logger: Logger
   pool: WorkerPool | undefined
+  typechecker: Typechecker | undefined
 
   vitenode: ViteNodeServer = undefined!
 
@@ -151,12 +152,20 @@ export class Vitest {
   async typecheck() {
     const testsFilesList = await this.globTestFiles()
     const checker = new Typechecker(this, testsFilesList)
+    this.typechecker = checker
     checker.onParseEnd(async ({ files, sourceErrors }) => {
       await this.report('onCollected', files)
-      await this.report('onFinished', files)
+      if (!files.length)
+        this.logger.printNoTestFound()
+      else
+        await this.report('onFinished', files)
       if (sourceErrors.length && !this.config.typecheck.ignoreSourceErrors) {
         process.exitCode = 1
         await this.logger.printSourceTypeErrors(sourceErrors)
+      }
+      if (!files.length) {
+        const exitCode = this.config.passWithNoTests ? 0 : 1
+        process.exit(exitCode)
       }
       if (this.config.watch) {
         await this.report('onWatcherStart', files, [
@@ -167,13 +176,16 @@ export class Vitest {
     })
     checker.onParseStart(async () => {
       await this.report('onInit', this)
-      await this.report('onCollected', checker.getTestFiles())
+      const files = checker.getTestFiles()
+      if (files)
+        await this.report('onCollected', checker.getTestFiles())
     })
     checker.onWatcherRerun(async () => {
-      const { files } = checker.getResult()
-      await this.report('onWatcherRerun', files.map(f => f.filepath), 'File change detected. Triggering rerun.')
+      await this.report('onWatcherRerun', testsFilesList, 'File change detected. Triggering rerun.')
       await checker.collectTests()
-      await this.report('onCollected', checker.getTestFiles())
+      const files = checker.getTestFiles()
+      if (files)
+        await this.report('onCollected', checker.getTestFiles())
     })
     await checker.collectTests()
     await checker.start()
@@ -503,6 +515,7 @@ export class Vitest {
       this.closingPromise = Promise.allSettled([
         this.pool?.close(),
         this.server.close(),
+        this.typechecker?.clean(),
       ].filter(Boolean)).then((results) => {
         results.filter(r => r.status === 'rejected').forEach((err) => {
           this.logger.error('error during close', (err as PromiseRejectedResult).reason)
