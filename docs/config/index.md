@@ -128,7 +128,7 @@ If disabled, your `alias` and `<plugin>.resolveId` won't affect imports inside e
 #### deps.interopDefault
 
 - **Type:** `boolean`
-- **Default:** `false` if `environment` is `node`, `true` otherwise
+- **Default:** `false` if `environment` is `node` and file doesn't have `.mts` extension, `true` otherwise
 
 Interpret CJS module's default as named exports. Some dependencies only bundle CJS modules and don't use named exports that Node.js can statically analyze when a package is imported using `import` syntax instead of `require`. When importing such dependencies in Node environment using named exports, you will see this error:
 
