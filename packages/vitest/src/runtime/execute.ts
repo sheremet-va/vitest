@@ -73,6 +73,14 @@ export class VitestRunner extends ViteNodeRunner {
   }
 
   shouldInterop(path: string, mod: any) {
-    return this.options.interopDefault ?? (getCurrentEnvironment() !== 'node' && super.shouldInterop(path, mod))
+    if (this.options.interopDefault === false)
+      return false
+    if (!('default' in mod))
+      return false
+    // since by default ts converts to "require", interop all .ts files with default export
+    // TODO check tsconfig for module/target and type module in package.json
+    if (/\.c?tsx?$/.test(path))
+      return true
+    return getCurrentEnvironment() !== 'node' && super.shouldInterop(path, mod)
   }
 }
