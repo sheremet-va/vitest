@@ -144,6 +144,21 @@ export class TestRun {
     ])
     await this.vitest.report('onCoverage', coverage)
   }
+
+  private async reportHook(name: ReportedHookContext['name'], entity: ReportedHookContext['entity'], startingHooks: ReportedHookContext[], endingHooks: ReportedHookContext[]) {
+    const start = startingHooks.filter(hook => hook.name === name && hook.entity.id === entity.id)
+    const end = endingHooks.filter(hook => hook.name === name && hook.entity.id === entity.id)
+
+    for (const hook of start) {
+      const index = startingHooks.findIndex(h => h === hook)
+      await this.vitest.report('onHookStart', startingHooks.splice(index, 1)[0])
+    }
+
+    for (const hook of end) {
+      const index = endingHooks.findIndex(h => h === hook)
+      await this.vitest.report('onHookEnd', endingHooks.splice(index, 1)[0])
+    }
+  }
 }
 
 interface Counter {
