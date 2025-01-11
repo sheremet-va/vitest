@@ -177,6 +177,17 @@ export type TaskResultPack = [
   event: TaskUpdateEvent[],
 ]
 
+export type TaskEventPack = [
+  /**
+   * Unique task identifier from `task.id`.
+   */
+  id: string,
+  /**
+   * The name of the event that triggered the update.
+   */
+  event: TaskUpdateEvent,
+]
+
 export type TaskUpdateEvent =
   | 'test-failed-early'
   | 'suite-failed-early'

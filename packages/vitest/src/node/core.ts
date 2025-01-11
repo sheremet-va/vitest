@@ -502,7 +502,8 @@ export class Vitest {
         await this._testRun.log(log).catch(noop)
       }
 
-      await this._testRun.updated(taskPacks).catch(noop)
+      // TODO
+      await this._testRun.updated(taskPacks, []).catch(noop)
     }
 
     if (hasFailed(files)) {
