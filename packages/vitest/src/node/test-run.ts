@@ -54,7 +54,6 @@ export class TestRun {
         continue
       }
 
-      // for (const event of events) {
       if (event === 'suite-prepare' && entity.type === 'suite') {
         await this.vitest.report('onTestSuiteReady', entity)
       }
