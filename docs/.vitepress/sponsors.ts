@@ -27,18 +27,17 @@ const vitestSponsors = {
       img: '/zammad.svg',
     },
   ],
-  platinum: [
-    {
-      name: 'Bit',
-      url: 'https://bit.dev',
-      img: '/bit.svg',
-    },
-  ],
+  // platinum: [],
   gold: [
     {
       name: 'vital',
       url: 'https://vital.io/',
       img: '/vital.svg',
+    },
+    {
+      name: 'devowl.io',
+      url: 'https://devowl.io',
+      img: '/devowlio-logo.svg',
     },
   ],
 } satisfies Record<string, Sponsor[]>
@@ -49,11 +48,11 @@ export const sponsors = [
     size: 'big',
     items: vitestSponsors.special,
   },
-  {
-    tier: 'Platinum Sponsors',
-    size: 'big',
-    items: vitestSponsors.platinum,
-  },
+  // {
+  //   tier: 'Platinum Sponsors',
+  //   size: 'big',
+  //   items: vitestSponsors.platinum,
+  // },
   {
     tier: 'Gold Sponsors',
     size: 'medium',
